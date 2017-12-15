@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/glesys/docker-machine-driver-glesys.svg?branch=master)](https://travis-ci.org/glesys/docker-machine-driver-glesys)
+
 # GleSYS driver for Docker Machine
 
 This is the official Docker Machine driver to create Docker machines with
