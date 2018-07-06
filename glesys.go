@@ -209,21 +209,6 @@ func (d *Driver) Create() error {
 	}
 
 	d.ServerID = server.ID
-
-	log.Info("Waiting for machine to come online...")
-
-	for {
-		server, err = client.Servers.Details(context.Background(), d.ServerID)
-		if err != nil {
-			return err
-		}
-
-		if server.IsLocked() == false {
-			break
-		}
-		time.Sleep(1 * time.Second)
-	}
-
 	d.IPAddress = server.IPList[0].Address
 
 	return nil
