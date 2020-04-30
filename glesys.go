@@ -3,6 +3,7 @@ package glesys
 import (
 	"context"
 	"fmt"
+	"github.com/glesys/glesys-go/v2"
 	"io/ioutil"
 	"math/rand"
 	"net"
@@ -15,7 +16,6 @@ import (
 	"github.com/docker/machine/libmachine/mcnflag"
 	"github.com/docker/machine/libmachine/ssh"
 	"github.com/docker/machine/libmachine/state"
-	"github.com/glesys/glesys-go"
 )
 
 const (
@@ -25,6 +25,7 @@ const (
 	defaultMemory     = 2048
 	defaultStorage    = 20
 	defaultTemplate   = "Ubuntu 16.04 LTS 64-bit"
+	defaultPlatform   = "VMware"
 )
 
 const (
@@ -39,6 +40,7 @@ const (
 	sshKeyPathFlag   = "glesys-ssh-key-path"
 	storageFlag      = "glesys-storage"
 	templateFlag     = "glesys-template"
+	platformFlag     = "glesys-platform"
 )
 
 // Driver for GleSYS
@@ -55,6 +57,7 @@ type Driver struct {
 	ServerID     string
 	Storage      int
 	Template     string
+	Platform     string
 }
 
 // NewDriver creates a new driver
@@ -128,6 +131,11 @@ func (d *Driver) GetCreateFlags() []mcnflag.Flag {
 			Usage: "Path to the SSH key file you want to use. If omitted, a new key will be generated",
 			Value: "",
 		},
+		mcnflag.StringFlag{
+			Name:  platformFlag,
+			Usage: "Virtualization platform (VMware or KVM)",
+			Value: defaultPlatform,
+		},
 	}
 }
 
@@ -154,6 +162,11 @@ func (d *Driver) SetConfigFromFlags(opts drivers.DriverOptions) error {
 	d.SSHKeyPath = opts.String(sshKeyPathFlag)
 	d.Storage = opts.Int(storageFlag)
 	d.Template = opts.String(templateFlag)
+	d.Platform = opts.String(platformFlag)
+
+	if d.Platform != "VMware" && d.Platform != "KVM" {
+		return fmt.Errorf("platform %v is not valid, supported plaforms is VMware or KVM", d.Platform)
+	}
 
 	return nil
 }
@@ -188,7 +201,7 @@ func (d *Driver) Create() error {
 		return err
 	}
 
-	server, err := client.Servers.Create(context.Background(), glesys.CreateServerParams{
+	serverParams := glesys.CreateServerParams{
 		Bandwidth:    d.Bandwidth,
 		CampaignCode: d.CampaignCode,
 		CPU:          d.CPU,
@@ -197,12 +210,21 @@ func (d *Driver) Create() error {
 		IPv4:         "any",
 		IPv6:         "any",
 		Memory:       d.Memory,
-		Password:     d.RootPassword,
-		Platform:     "VMware",
-		PublicKey:    string(publicKey),
+		Platform:     d.Platform,
 		Storage:      d.Storage,
 		Template:     d.Template,
-	})
+	}
+	if d.Platform == "KVM" {
+		publicKeys := []string{
+			string(publicKey),
+		}
+		serverParams = serverParams.WithUser("kvm", publicKeys, "")
+	} else {
+		serverParams.Password = d.RootPassword
+		serverParams.PublicKey = string(publicKey)
+	}
+
+	server, err := client.Servers.Create(context.Background(), serverParams)
 
 	if err != nil {
 		return fmt.Errorf("Failed to create machine: %v", err)
@@ -231,7 +253,12 @@ func (d *Driver) GetSSHPort() (int, error) {
 
 // GetSSHUsername returns username for use with ssh
 func (d *Driver) GetSSHUsername() string {
-	return "root"
+	if d.Platform == "KVM" {
+		return "kvm"
+	} else {
+		return "root"
+	}
+
 }
 
 // GetURL returns a Docker compatible URL for connecting to this machine
