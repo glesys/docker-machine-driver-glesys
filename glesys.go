@@ -114,7 +114,7 @@ func (d *Driver) GetCreateFlags() []mcnflag.Flag {
 		},
 		mcnflag.StringFlag{
 			Name:  rootPasswordFlag,
-			Usage: "Root password to use for the machine. If omitted, a random password will be generated",
+			Usage: "Root password to use for the machine. If omitted, a random password will be generated (VMware only)",
 		},
 		mcnflag.StringFlag{
 			Name:  templateFlag,
@@ -344,5 +344,5 @@ func (d *Driver) Stop() error {
 }
 
 func (d *Driver) getClient() *glesys.Client {
-	return glesys.NewClient(d.Project, d.APIKey, "docker-machine-driver-glesys/1.0.0")
+	return glesys.NewClient(d.Project, d.APIKey, "docker-machine-driver-glesys/1.1.0")
 }
