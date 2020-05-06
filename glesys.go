@@ -19,13 +19,14 @@ import (
 )
 
 const (
-	defaultBandwidth  = 100
-	defaultCPU        = 2
-	defaultDataCenter = "Falkenberg"
-	defaultMemory     = 2048
-	defaultStorage    = 20
-	defaultTemplate   = "Ubuntu 16.04 LTS 64-bit"
-	defaultPlatform   = "VMware"
+	defaultBandwidth   = 100
+	defaultCPU         = 2
+	defaultDataCenter  = "Falkenberg"
+	defaultMemory      = 2048
+	defaultStorage     = 20
+	defaultTemplate    = "Ubuntu 16.04 LTS 64-bit"
+	defaultPlatform    = "VMware"
+	defaultUsernameKvm = "docker-machine"
 )
 
 const (
@@ -41,6 +42,7 @@ const (
 	storageFlag      = "glesys-storage"
 	templateFlag     = "glesys-template"
 	platformFlag     = "glesys-platform"
+	usernameKVMFlag  = "glesys-username-kvm"
 )
 
 // Driver for GleSYS
@@ -58,6 +60,7 @@ type Driver struct {
 	Storage      int
 	Template     string
 	Platform     string
+	UsernameKVM  string
 }
 
 // NewDriver creates a new driver
@@ -136,6 +139,11 @@ func (d *Driver) GetCreateFlags() []mcnflag.Flag {
 			Usage: "Virtualization platform (VMware or KVM)",
 			Value: defaultPlatform,
 		},
+		mcnflag.StringFlag{
+			Name:  usernameKVMFlag,
+			Usage: "Username to use in KVM platform",
+			Value: defaultUsernameKvm,
+		},
 	}
 }
 
@@ -163,9 +171,10 @@ func (d *Driver) SetConfigFromFlags(opts drivers.DriverOptions) error {
 	d.Storage = opts.Int(storageFlag)
 	d.Template = opts.String(templateFlag)
 	d.Platform = opts.String(platformFlag)
+	d.UsernameKVM = opts.String(usernameKVMFlag)
 
 	if d.Platform != "VMware" && d.Platform != "KVM" {
-		return fmt.Errorf("platform %v is not valid, supported plaforms is VMware or KVM", d.Platform)
+		return fmt.Errorf("platform %v is not valid, supported platforms are VMware and KVM", d.Platform)
 	}
 
 	return nil
@@ -218,7 +227,7 @@ func (d *Driver) Create() error {
 		publicKeys := []string{
 			string(publicKey),
 		}
-		serverParams = serverParams.WithUser("kvm", publicKeys, "")
+		serverParams = serverParams.WithUser(d.UsernameKVM, publicKeys, "")
 	} else {
 		serverParams.Password = d.RootPassword
 		serverParams.PublicKey = string(publicKey)
@@ -254,7 +263,7 @@ func (d *Driver) GetSSHPort() (int, error) {
 // GetSSHUsername returns username for use with ssh
 func (d *Driver) GetSSHUsername() string {
 	if d.Platform == "KVM" {
-		return "kvm"
+		return d.UsernameKVM
 	} else {
 		return "root"
 	}
