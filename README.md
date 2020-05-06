@@ -49,6 +49,7 @@ docker-machine create -d glesys | grep glesys
   --glesys-data-center "Falkenberg"            Data center to place the machine in
   --glesys-memory "2048"                       Memory in MB
   --glesys-root-password                       Root password to use for the machine. If omitted, a random password will be generated (VMware only)
+  --glesys-username-kvm "docker-machine"       Username to use in KVM platform
   --glesys-ssh-key-path                        Path to the SSH key file you want to use. If omitted, a new key will be generated
   --glesys-storage "20"                        Storage in GB
   --glesys-template "Ubuntu 16.04 LTS 64-bit"  Template to use for the machine
