@@ -16,6 +16,8 @@ page.
 Download the binary for your platform, make sure to add it to your `PATH` and
 make it executable.
 
+Rename the file to `docker-machine-driver-glesys`.
+
 ### Building from Source
 
 Make sure you have Go and `GOPATH` setup correctly. Then run:
