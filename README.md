@@ -18,6 +18,10 @@ make it executable.
 
 Rename the file to `docker-machine-driver-glesys`.
 
+#### Windows
+
+Rename the file to `docker-machine-driver-glesys.exe`
+
 ### Building from Source
 
 Make sure you have Go and `GOPATH` setup correctly. Then run:
