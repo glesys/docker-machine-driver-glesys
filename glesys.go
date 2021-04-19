@@ -24,7 +24,7 @@ const (
 	defaultDataCenter  = "Falkenberg"
 	defaultMemory      = 2048
 	defaultStorage     = 20
-	defaultTemplate    = "Ubuntu 16.04 LTS 64-bit"
+	defaultTemplate    = "Ubuntu 20.04 LTS 64-bit"
 	defaultPlatform    = "VMware"
 	defaultUsernameKvm = "docker-machine"
 )
