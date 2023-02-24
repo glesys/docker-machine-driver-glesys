@@ -5,9 +5,12 @@ require (
 	github.com/docker/docker v1.13.2-0.20170601211448-f5ec1e2936dc // indirect
 	github.com/docker/machine v0.16.2
 	github.com/glesys/glesys-go/v2 v2.4.1
+	github.com/google/go-cmp v0.5.9 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
 	github.com/sirupsen/logrus v1.5.0 // indirect
 	github.com/stretchr/testify v1.3.0
-	golang.org/x/crypto v0.0.0-20200423211502-4bdfaf469ed5 // indirect
+	golang.org/x/crypto v0.1.0 // indirect
+	gotest.tools v2.2.0+incompatible // indirect
 )
 
 replace (
