@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [1.2.0] - 2023-02-27
+- Update default OS template
+- Update Windows specifics in README
+- Update glesys-go dependency
+- Bump dependencies
 ## [1.1.0] - 2020-05-11
 ### Added
 - Support for KVM platform
