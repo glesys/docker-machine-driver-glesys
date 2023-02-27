@@ -3,7 +3,7 @@ package glesys
 import (
 	"context"
 	"fmt"
-	"github.com/glesys/glesys-go/v2"
+	"github.com/glesys/glesys-go/v6"
 	"io/ioutil"
 	"math/rand"
 	"net"
