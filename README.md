@@ -36,7 +36,7 @@ go install ./cmd/docker-machine-driver-glesys
 
 To use this driver you need a GleSYS Cloud account and a valid API key. You can
 sign up for a free account at https://glesys.com/signup then visit
-https://customer.glesys.com to create an API key for any of your projects.
+https://cloud.glesys.com to create an API key for any of your projects.
 
 ## Using the Driver
 
